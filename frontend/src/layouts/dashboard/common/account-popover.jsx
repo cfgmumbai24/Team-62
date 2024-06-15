@@ -9,16 +9,36 @@ import MenuItem from '@mui/material/MenuItem';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 
+import { useRouter } from 'src/routes/hooks';
+
 import { account } from 'src/_mock/account';
 
 export default function AccountPopover() {
   const [open, setOpen] = useState(null);
+  const router = useRouter();
 
   const handleOpen = (event) => {
     setOpen(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = async() => {
+    try {
+      const response = await fetch('http://localhost:3000/logoutTeacher', {
+        method: 'GET',
+        // headers: {
+        //   'Content-Type': 'application/json',
+        // }
+      });
+
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
+      }
+      const data = await response.json(); 
+      console.log(data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+    router.push('/login');
     setOpen(null);
   };
 

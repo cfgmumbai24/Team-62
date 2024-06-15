@@ -15,7 +15,7 @@ const Teacher = require('./models/teacher');
               // CORS setup
 app.use(cors({
   credentials: true,
-  origin: "http://localhost:5173",
+  origin: "http://localhost:3030",
 }));
 mongoose.connect(process.env.mongo_uri)
   .then(() => console.log('Connected to Mongo'))
@@ -44,9 +44,10 @@ app.post("/registerTeacher", async (req, res) => {
   //function for logout
 app.get('/logoutTeacher' , (req,res)=>{
 
-  res.cookie('token' , '',{maxAge:1})
-  res.redirect('/loginTeacher')
-  // res.cookie("token","").json(true);
+  console.log('here')
+  //  res.cookie('token' , '',{maxAge:1})
+  // res.redirect('/loginTeacher')
+   res.cookie("token","").json(true);
 })
 
   // rendering all the students registered under a teacher, accross different standards(classes)
@@ -68,17 +69,21 @@ app.get('/teacherHome', (req,res)=>{
 
 //loging in a teacher
 app.post("/loginTeacher", async (req, res) => {
+ 
   const { teacherId, password } = req.body;
   const teacherDoc = await Teacher.findOne({ teacherId })
   if (!teacherDoc) {
     res.status(422).json("Invalid Credentials")
+
   }
   else {
     if (bcrypt.compareSync(password, teacherDoc.password)) {
       jwt.sign({ id: teacherDoc.teacherId }, jwtSecret, {}, (err, token) => {
         if (err) throw err;
         else {
-          res.cookie("token", token,{httpOnly:true}).json(teacherDoc)
+          console.log("at login")
+          res.cookies("token", token,{httpOnly:true}).json(teacherDoc)
+          console.log("at login 2")
         }
       })
     }
