@@ -1,14 +1,14 @@
 import { sample } from 'lodash';
-import {  } from '@-js/';
+import { faker } from '@faker-js/faker';
 
 // ----------------------------------------------------------------------
 
 export const users = [...Array(24)].map((_, index) => ({
-  id: .string.uuid(),
+  id: faker.string.uuid(),
   avatarUrl: `/assets/images/avatars/avatar_${index + 1}.jpg`,
-  name: .person.fullName(),
-  company: .company.name(),
-  isVerified: .datatype.boolean(),
+  name: faker.person.fullName(),
+  company: faker.company.name(),
+  isVerified: faker.datatype.boolean(),
   status: sample(['active', 'banned']),
   role: sample([
     'Leader',
