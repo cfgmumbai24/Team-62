@@ -53,7 +53,7 @@ app.get('/logoutTeacher' , (req,res)=>{
   // rendering all the students registered under a teacher, accross different standards(classes)
 app.get('/teacherHome', (req,res)=>{
   
-  const token = req.cookie.jwt
+  const token = req.cookie.token
     if(!token) 
       {
         res.redirect('/loginTeacher')
