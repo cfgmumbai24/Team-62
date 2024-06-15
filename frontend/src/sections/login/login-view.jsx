@@ -44,7 +44,9 @@ export default function LoginView() {
       if (!response.ok) {
         throw new Error(`API request failed with status ${response.status}`);
       }
+      //const data = await response.json(); 
       const data = await response.json(); 
+      document.cookie = `token=${data}; path=/; domain=localhost; samesite=lax`;
       console.log(data);
       router.push('/');
     } catch (error) {
