@@ -5,7 +5,7 @@ const testSchema = new Schema({
         required: true
     },
     referenceText: [{type: String}],
-    level: {type: String, required: true}
+    level: {type: Number, required: true}
 })
 const Test= mongoose.model('Test', testSchema);
 module.exports=Test;
