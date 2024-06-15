@@ -82,7 +82,10 @@ app.post("/loginTeacher", async (req, res) => {
         if (err) throw err;
         else {
           console.log("at login")
-          res.cookies("token", token,{httpOnly:true}).json(teacherDoc)
+          // res.cookies("token", token,{httpOnly:true}).json(teacherDoc)
+           res.cookie("token", token, { 
+            domain: 'localhost'
+          }).json(token)
           console.log("at login 2")
         }
       })
