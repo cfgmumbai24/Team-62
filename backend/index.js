@@ -201,6 +201,54 @@ app.post("/createstud", async (req, res) => {
 
 })
 
+app.post('/createTest', async (req,res)=>{
+    const {level,langType, referenceText}=req.body;
+    const testLev = await Test.findOne({level,langType});
+    if(testLev)
+      {
+        testLev.referenceText.push(referenceText);
+        await testLev.save();
+        res.json(testLev)
+      }
+      else
+      {
+        const newTest = new Test({
+          langType,
+          level,
+          referenceText
+        })
+        newTest.save().then(res.json(newTest)).catch((err)=>{console.log(err)})
+       
+      }
+
+    
+  })
+
+app.post("/test", async (req, res)=>{
+    const { level, langType} = req.body;
+    try {
+      const testDoc = await Test.findOne({level , langType})
+      const testArry=testDoc.referenceText;
+      const size=testArry.length;
+      console.log(size, "size");
+      if(!size){
+        res.status(422).json("No test available");
+        return;
+      }
+  
+      else{
+        const random=Math.floor(Math.random() * size);
+        const test=testArry[random];
+        res.json(test);
+      }
+  
+    } catch (e) {
+      console.log(e);
+      res.status(422).json(e);
+    }
+  
+  })
+
 
 app.listen(3000, () => {
   console.log('Example app listening on port 3000!')
