@@ -35,6 +35,7 @@ export default function AppView() {
             title="Sentence"
             total={13}
             color="info"
+            icon={<img alt="icon" src="/assets/icons/glass/ic_glass_users.png" />}
           />
         </Grid>
 
@@ -51,6 +52,9 @@ export default function AppView() {
             title="Characters"
             total={8}
             color="error"
+            icon={
+              <img alt="icon" src="/assets/icons/glass/ic_glass_message.png" />
+            }
           />
         </Grid>
 

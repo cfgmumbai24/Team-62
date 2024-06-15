@@ -1,42 +1,45 @@
-import SvgColor from 'src/components/svg-color';
+import SvgColor from "src/components/svg-color";
 
 // ----------------------------------------------------------------------
 
 const icon = (name) => (
-  <SvgColor src={`/assets/icons/navbar/${name}.svg`} sx={{ width: 1, height: 1 }} />
+  <SvgColor
+    src={`/assets/icons/navbar/${name}.svg`}
+    sx={{ width: 1, height: 1 }}
+  />
 );
 
 const navConfig = [
   {
-    title: 'dashboard',
-    path: '/',
-    icon: icon('ic_analytics'),
+    title: "dashboard",
+    path: "/",
+    icon: icon("ic_analytics"),
   },
   {
-    title: 'user',
-    path: '/user',
-    icon: icon('ic_user'),
+    title: "user",
+    path: "/user",
+    icon: icon("ic_user"),
   },
   {
-    title: 'product',
-    path: '/products',
-    icon: icon('ic_cart'),
+    title: "Marathi",
+    path: "/marathi",
+    icon: icon("ic_lock"),
   },
   {
-    title: 'blog',
-    path: '/blog',
-    icon: icon('ic_blog'),
+    title: "Hindi",
+    path: "/hindi",
+    icon: icon("ic_lock"),
   },
   {
-    title: 'login',
-    path: '/login',
-    icon: icon('ic_lock'),
+    title: "English",
+    path: "/english",
+    icon: icon("ic_lock"),
   },
   {
-    title: 'Not found',
-    path: '/404',
-    icon: icon('ic_disabled'),
-  },
+    title: "login",
+    path: "/login",
+    icon: icon("ic_lock"),
+  }
 ];
 
 export default navConfig;
