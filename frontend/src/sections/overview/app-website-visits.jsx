@@ -15,7 +15,7 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     colors,
     plotOptions: {
       bar: {
-        columnWidth: '16%',
+        columnWidth: '5%',
       },
     },
     fill: {
@@ -23,7 +23,7 @@ export default function AppWebsiteVisits({ title, subheader, chart, ...other }) 
     },
     labels,
     xaxis: {
-      type: 'datetime',
+      type: 'text',
     },
     tooltip: {
       shared: true,
