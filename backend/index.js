@@ -6,7 +6,7 @@ const cors = require('cors');
 require("dotenv").config()
 const bcryptsalt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken")
-const jwtSecret = process.env.JWT_SECRET;
+const jwtSecret = "mdskjadskjbkjzxzgk";
 const cookieParser = require("cookie-parser");
 app.use(express.json())
 app.use(cookieParser())
@@ -17,7 +17,7 @@ app.use(cors({
   credentials: true,
   origin: "http://localhost:3030",
 }));
-mongoose.connect(process.env.mongo_uri)
+mongoose.connect( "mongodb+srv://test1:test123@atlascluster.miyhqef.mongodb.net/dbtest?retryWrites=true&w=majority&appName=AtlasCluster")
   .then(() => console.log('Connected to Mongo'))
   .catch((err) => console.log(err));
 
@@ -53,16 +53,21 @@ app.get('/logoutTeacher' , (req,res)=>{
   // rendering all the students registered under a teacher, accross different standards(classes)
 app.get('/teacherHome', (req,res)=>{
   
-  const token = req.cookie.token
+  const token=req.cookies.token;
+  console.log(token)
     if(!token) 
       {
         res.redirect('/loginTeacher')
       }
     else{
-     jwt.verify(token, JWT_SECRET, (error, decodedToken)=>{
-         const tid= JSON.stringify(decodedToken.teacherId)
-       // const tid = req.body.tid;
-           Student.find({ teachers: tid }).then((result)=>{ res.json(result) })
+     jwt.verify(token, jwtSecret, (error, decodedToken)=>{
+        const tid= (decodedToken.id)
+        //console.log(decodedToken.id)
+        // console.log(typeof(JSON.stringify(decodedToken.id)))
+       //const tid = req.body.tid;
+      //   console.log(typeof(tid))
+      //  console.log(tid)
+           Student.find({ teachers: tid }).then((result)=>{ console.log(result), res.json(result) })
       })}
 
 })
@@ -71,6 +76,7 @@ app.get('/teacherHome', (req,res)=>{
 app.post("/loginTeacher", async (req, res) => {
  
   const { teacherId, password } = req.body;
+  console.log(teacherId, password, "Hi");
   const teacherDoc = await Teacher.findOne({ teacherId })
   if (!teacherDoc) {
     res.status(422).json("Invalid Credentials")
@@ -82,8 +88,7 @@ app.post("/loginTeacher", async (req, res) => {
         if (err) throw err;
         else {
           console.log("at login")
-          // res.cookies("token", token,{httpOnly:true}).json(teacherDoc)
-           res.cookie("token", token, { 
+          res.cookie("token", token, { 
             domain: 'localhost'
           }).json(token)
           console.log("at login 2")
