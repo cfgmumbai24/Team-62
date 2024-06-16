@@ -11,7 +11,7 @@ export default function ProductsView() {
   useEffect(() => {
     const fetchStudents = async () => {
       try {
-        const response = await fetch('http://localhost:3000/teacherHome/Teacher01'); // Replace with your API endpoint
+        const response = await fetch('http://localhost:3000/teacherHome/Teacher02'); // Replace with your API endpoint
         if (!response.ok) {
           throw new Error('Failed to fetch students');
         }
@@ -40,7 +40,7 @@ export default function ProductsView() {
   return (
     <Container>
       <Typography variant="h4" sx={{ mb: 5 }}>
-        Standards
+        Standard 
       </Typography>
 
       <Grid container spacing={3}>

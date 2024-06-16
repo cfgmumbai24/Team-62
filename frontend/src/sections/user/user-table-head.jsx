@@ -20,16 +20,15 @@ export default function UserTableHead({
   return (
     <TableHead>
       <TableRow>
-        {headLabel.map((headCell, index) => (
+        {headLabel.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={index === 0 ? 'left' : 'right'} // Align 'Roll No.' left, 'Level' right
+            align={headCell.align || 'left'} // Align left by default if not specified
             sortDirection={orderBy === headCell.id ? order : false}
             sx={{
               width: headCell.width,
               minWidth: headCell.minWidth,
-              paddingLeft: index === 0 ? '30px' : '0', // Add left padding to first cell
-              paddingRight: index === 1 ? '30px' : '0', // Add right padding to second cell
+              paddingLeft: '30px', // Adjust left padding if necessary
             }}
           >
             <TableSortLabel
