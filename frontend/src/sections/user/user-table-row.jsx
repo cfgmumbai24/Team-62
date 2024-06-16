@@ -1,11 +1,8 @@
-import { useState } from 'react';
-import PropTypes from 'prop-types';
-import TableRow from '@mui/material/TableRow';
-import MenuItem from '@mui/material/MenuItem';
-import TableCell from '@mui/material/TableCell';
-import Select from '@mui/material/Select';
-import FormControl from '@mui/material/FormControl';
-import Button from '@mui/material/Button';
+import { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import TableRow from "@mui/material/TableRow";
+import TableCell from "@mui/material/TableCell";
+import Button from "@mui/material/Button";
 import { useRouter } from 'src/routes/hooks';
 
 export default function UserTableRow({
@@ -14,33 +11,44 @@ export default function UserTableRow({
 }) {
   const [levelValue, setLevelValue] = useState(level || 'paragraph');
   const router = useRouter();
+  const [referenceText, setReferenceText] = useState("");
 
   const handleChange = (event) => {
     setLevelValue(event.target.value);
   };
 
-  const handleTestClick = (e) => {
-    // Add your test handling logic here
-    router.push(`/exam/${e.id ? e.id : 1}`)
+  const handleTestClick = async () => {
+    try {
+      const response = await fetch("http://localhost:3000/test", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // Include credentials in the request
+        body: JSON.stringify({ level: "3", langType: "M" }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch reference text");
+      }
+      const data = await response.json();
+      setReferenceText(data); // Assuming your API response has a field 'referenceText'
+      router.push(`/exam/${e.id ? e.id : 1}/${data}`)
+      console.log("Fetched reference text:", data); // Log the fetched data
+    } catch (error) {
+      console.error("Error fetching reference text:", error);
+      setReferenceText("Error"); // Placeholder or error handling
+    }
   };
 
   return (
     <TableRow hover tabIndex={-1}>
       <TableCell sx={{ paddingLeft: 5 }}>{rollNo}</TableCell>
+      <TableCell>{level}</TableCell>
       <TableCell>
-        <FormControl fullWidth sx={{ ml: 20, width: 250 }}>
-          <Select value={levelValue} onChange={handleChange}>
-            <MenuItem value="paragraph">Paragraph</MenuItem>
-            <MenuItem value="sentence">Sentence</MenuItem>
-            <MenuItem value="words">Words</MenuItem>
-            <MenuItem value="character">Character</MenuItem>
-          </Select>
-        </FormControl>
-      </TableCell>
-      <TableCell>
-        <Button 
-          variant="contained" 
-          color="primary" 
+        <Button
+          variant="contained"
+          color="primary"
           onClick={handleTestClick}
           sx={{ ml: 20 }} // Add left margin for the button
         >
@@ -53,5 +61,5 @@ export default function UserTableRow({
 
 UserTableRow.propTypes = {
   rollNo: PropTypes.string.isRequired,
-  level: PropTypes.string,
+  levelId: PropTypes.string.isRequired,
 };
