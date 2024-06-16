@@ -5,26 +5,20 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 const bcryptsalt = bcrypt.genSaltSync(10);
-const jwt = require("jsonwebtoken");
-const jwtSecret = "mdskjadskjbkjzxzgk";
+const jwt = require("jsonwebtoken")
+const jwtSecret =process.env.JWT_SECRET_KEY;
 const cookieParser = require("cookie-parser");
-app.use(express.json());
-app.use(cookieParser());
-const Student = require("./models/student");
-const Test = require("./models/test");
-const Teacher = require("./models/teacher");
-// CORS setup
-app.use(
-  cors({
-    credentials: true,
-    origin: "http://localhost:3030",
-  })
-);
-mongoose
-  .connect(
-    "mongodb+srv://test1:test123@atlascluster.miyhqef.mongodb.net/dbtest?retryWrites=true&w=majority&appName=AtlasCluster"
-  )
-  .then(() => console.log("Connected to Mongo"))
+app.use(express.json())
+app.use(cookieParser())
+const Student = require('./models/student');
+const Teacher = require('./models/teacher');
+              // CORS setup
+app.use(cors({
+  credentials: true,
+  origin: "http://localhost:3030",
+}));
+mongoose.connect(process.env.mongo_uri)
+  .then(() => console.log('Connected to Mongo'))
   .catch((err) => console.log(err));
 
 app.get("/teacherHome/:id", (req, res) => {
