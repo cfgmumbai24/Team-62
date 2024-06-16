@@ -17,7 +17,7 @@ export default function UserTableRow({
     setLevelValue(event.target.value);
   };
 
-  const handleTestClick = async () => {
+  const handleTestClick = async (e) => {
     try {
       const response = await fetch("http://localhost:3000/test", {
         method: "POST",
@@ -33,7 +33,7 @@ export default function UserTableRow({
       }
       const data = await response.json();
       setReferenceText(data); // Assuming your API response has a field 'referenceText'
-      router.push(`/exam/${e.id ? e.id : 1}/${data}`)
+      router.push(`/exam/${e.id ? e.id : 1}`)
       console.log("Fetched reference text:", data); // Log the fetched data
     } catch (error) {
       console.error("Error fetching reference text:", error);

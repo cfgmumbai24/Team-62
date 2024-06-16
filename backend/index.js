@@ -12,6 +12,7 @@ app.use(express.json())
 app.use(cookieParser())
 const Student = require('./models/student');
 const Teacher = require('./models/teacher');
+const Test = require('./models/test')
               // CORS setup
 app.use(cors({
   credentials: true,

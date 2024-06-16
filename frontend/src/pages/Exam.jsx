@@ -14,6 +14,8 @@ const Exam = () => {
 
     useEffect(() => {
         // Set text from backend
+        // const a = window.location.href.split('/').slice(-1)[0]
+        // setText(a)
     }, [])
 
     const handleSelectChange = (e) => {
