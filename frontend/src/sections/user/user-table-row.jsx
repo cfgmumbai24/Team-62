@@ -1,109 +1,55 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-
-import Stack from '@mui/material/Stack';
-import Avatar from '@mui/material/Avatar';
-import Popover from '@mui/material/Popover';
 import TableRow from '@mui/material/TableRow';
-import Checkbox from '@mui/material/Checkbox';
 import MenuItem from '@mui/material/MenuItem';
 import TableCell from '@mui/material/TableCell';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-
-import { useRouter } from 'src/routes/hooks';
-
-import Label from 'src/components/label';
-import Iconify from 'src/components/iconify';
-
-// ----------------------------------------------------------------------
+import Select from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import Button from '@mui/material/Button';
 
 export default function UserTableRow({
-  selected,
-  name,
-  avatarUrl,
-  company,
-  role,
-  isVerified,
-  status,
-  handleClick,
+  rollNo,
+  level,
 }) {
-  const [open, setOpen] = useState(null);
-  const router = useRouter();
+  const [levelValue, setLevelValue] = useState(level || 'paragraph');
 
-  const handleOpenMenu = (event) => {
-    setOpen(event.currentTarget);
+  const handleChange = (event) => {
+    setLevelValue(event.target.value);
   };
 
-  const handleCloseMenu = (e) => {
-    setOpen(null);
+  const handleTestClick = () => {
+    // Add your test handling logic here
     router.push(`/exam/${e.id ? e.id : 1}`)
   };
 
   return (
-    <>
-      <TableRow hover tabIndex={-1} role="checkbox" selected={selected}>
-        <TableCell padding="checkbox">
-          <Checkbox disableRipple checked={selected} onChange={handleClick} />
-        </TableCell>
-
-        <TableCell component="th" scope="row" padding="none">
-          <Stack direction="row" alignItems="center" spacing={2}>
-            <Avatar alt={name} src={avatarUrl} />
-            <Typography variant="subtitle2" noWrap>
-              {name}
-            </Typography>
-          </Stack>
-        </TableCell>
-
-        <TableCell>{company}</TableCell>
-
-        <TableCell>{role}</TableCell>
-
-        <TableCell align="center">{isVerified ? 'Yes' : 'No'}</TableCell>
-
-        <TableCell>
-          <Label color={(status === 'banned' && 'error') || 'success'}>{status}</Label>
-        </TableCell>
-
-        <TableCell align="right">
-          <IconButton onClick={handleOpenMenu}>
-            <Iconify icon="eva:more-vertical-fill" />
-          </IconButton>
-        </TableCell>
-      </TableRow>
-
-      <Popover
-        open={!!open}
-        anchorEl={open}
-        onClose={handleCloseMenu}
-        anchorOrigin={{ vertical: 'top', horizontal: 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{
-          sx: { width: 140 },
-        }}
-      >
-        <MenuItem onClick={handleCloseMenu}>
-          <Iconify icon="eva:edit-fill" sx={{ mr: 2 }} />
+    <TableRow hover tabIndex={-1}>
+      <TableCell sx={{ paddingLeft: 5 }}>{rollNo}</TableCell>
+      <TableCell>
+        <FormControl fullWidth sx={{ ml: 20, width: 250 }}>
+          <Select value={levelValue} onChange={handleChange}>
+            <MenuItem value="paragraph">Paragraph</MenuItem>
+            <MenuItem value="sentence">Sentence</MenuItem>
+            <MenuItem value="words">Words</MenuItem>
+            <MenuItem value="character">Character</MenuItem>
+          </Select>
+        </FormControl>
+      </TableCell>
+      <TableCell>
+        <Button 
+          variant="contained" 
+          color="primary" 
+          onClick={handleTestClick}
+          sx={{ ml: 20 }} // Add left margin for the button
+        >
           Take Test
-        </MenuItem>
-
-        <MenuItem onClick={handleCloseMenu} sx={{ color: 'error.main' }}>
-          <Iconify icon="eva:trash-2-outline" sx={{ mr: 2 }} />
-          Delete
-        </MenuItem>
-      </Popover>
-    </>
+        </Button>
+      </TableCell>
+    </TableRow>
   );
 }
 
 UserTableRow.propTypes = {
-  avatarUrl: PropTypes.any,
-  company: PropTypes.any,
-  handleClick: PropTypes.func,
-  isVerified: PropTypes.any,
-  name: PropTypes.any,
-  role: PropTypes.any,
-  selected: PropTypes.any,
-  status: PropTypes.string,
+  rollNo: PropTypes.string.isRequired,
+  level: PropTypes.string,
 };

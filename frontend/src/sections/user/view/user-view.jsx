@@ -1,75 +1,63 @@
-import { useState } from 'react';
-
-import Card from '@mui/material/Card';
-import Stack from '@mui/material/Stack';
+import React, { useState, useEffect } from 'react';
+import { Card, Button, Container, Stack, Typography, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import Table from '@mui/material/Table';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
 import TableBody from '@mui/material/TableBody';
-import Typography from '@mui/material/Typography';
 import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
-
-import { users } from 'src/_mock/user';
-
 import Iconify from 'src/components/iconify';
 import Scrollbar from 'src/components/scrollbar';
-
 import TableNoData from '../table-no-data';
 import UserTableRow from '../user-table-row';
 import UserTableHead from '../user-table-head';
 import TableEmptyRows from '../table-empty-rows';
-import UserTableToolbar from '../user-table-toolbar';
 import { emptyRows, applyFilter, getComparator } from '../utils';
 
-// ----------------------------------------------------------------------
-
 export default function UserPage() {
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [students, setStudents] = useState([]);
+  const [filteredStudents, setFilteredStudents] = useState([]);
+  const [standards, setStandards] = useState([]);
+  const [selectedStandard, setSelectedStandard] = useState('');
+
   const [page, setPage] = useState(0);
-
   const [order, setOrder] = useState('asc');
-
-  const [selected, setSelected] = useState([]);
-
-  const [orderBy, setOrderBy] = useState('name');
-
-  const [filterName, setFilterName] = useState('');
-
+  const [orderBy, setOrderBy] = useState('studentRollNo');
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:3000/teacherHome/Teacher01');
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
+        const data = await response.json();
+        setStudents(data);
+        setError(null);
+
+        // Extract unique standards from students data
+        const uniqueStandards = [...new Set(data.map(student => student.standard))];
+        setStandards(uniqueStandards);
+
+        // Initialize filteredStudents with all students initially
+        setFilteredStudents(data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleSort = (event, id) => {
     const isAsc = orderBy === id && order === 'asc';
-    if (id !== '') {
-      setOrder(isAsc ? 'desc' : 'asc');
-      setOrderBy(id);
-    }
-  };
-
-  const handleSelectAllClick = (event) => {
-    if (event.target.checked) {
-      const newSelecteds = users.map((n) => n.name);
-      setSelected(newSelecteds);
-      return;
-    }
-    setSelected([]);
-  };
-
-  const handleClick = (event, name) => {
-    const selectedIndex = selected.indexOf(name);
-    let newSelected = [];
-    if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, name);
-    } else if (selectedIndex === 0) {
-      newSelected = newSelected.concat(selected.slice(1));
-    } else if (selectedIndex === selected.length - 1) {
-      newSelected = newSelected.concat(selected.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelected = newSelected.concat(
-        selected.slice(0, selectedIndex),
-        selected.slice(selectedIndex + 1)
-      );
-    }
-    setSelected(newSelected);
+    setOrder(isAsc ? 'desc' : 'asc');
+    setOrderBy(id);
   };
 
   const handleChangePage = (event, newPage) => {
@@ -81,78 +69,81 @@ export default function UserPage() {
     setRowsPerPage(parseInt(event.target.value, 10));
   };
 
-  const handleFilterByName = (event) => {
-    setPage(0);
-    setFilterName(event.target.value);
+  const handleStandardChange = (event) => {
+    const selectedStd = event.target.value;
+    setSelectedStandard(selectedStd);
+
+    // Filter students based on selected standard
+    if (selectedStd === '') {
+      setFilteredStudents(students); // Show all students if no standard is selected
+    } else {
+      const filteredData = students.filter(student => student.standard === selectedStd);
+      setFilteredStudents(filteredData);
+    }
   };
 
   const dataFiltered = applyFilter({
-    inputData: users,
+    inputData: filteredStudents,
     comparator: getComparator(order, orderBy),
-    filterName,
   });
 
-  const notFound = !dataFiltered.length && !!filterName;
+  const rowCount = dataFiltered.length; // Adjust rowCount based on filtered data
 
   return (
-    <Container>
+    <Container sx = {{ width: 1100}}>
       <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
-        <Typography variant="h4">Users</Typography>
-
+        <Typography variant="h4">Students</Typography>
         <Button variant="contained" color="inherit" startIcon={<Iconify icon="eva:plus-fill" />}>
-          New User
+          New Student
         </Button>
       </Stack>
 
       <Card>
-        <UserTableToolbar
-          numSelected={selected.length}
-          filterName={filterName}
-          onFilterName={handleFilterByName}
-        />
+        <Stack direction="row" spacing={2} sx={{ p: 2 }}>
+          <FormControl fullWidth sx={{ minWidth: 120 }}>
+            <InputLabel id="standard-label">Standard</InputLabel>
+            <Select
+              labelId="standard-label"
+              value={selectedStandard}
+              onChange={handleStandardChange}
+            >
+              <MenuItem value="">All</MenuItem>
+              {standards.map(std => (
+                <MenuItem key={std} value={std}>{std}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
 
         <Scrollbar>
-          <TableContainer sx={{ overflow: 'unset' }}>
-            <Table sx={{ minWidth: 800 }}>
+          <TableContainer sx={{ overflow: 'unset'}}>
+            <Table sx={{ Width: "100%" }}>
               <UserTableHead
-                order={order}
-                orderBy={orderBy}
-                rowCount={users.length}
-                numSelected={selected.length}
+                rowCount={rowCount} // Pass rowCount based on filtered data
                 onRequestSort={handleSort}
-                onSelectAllClick={handleSelectAllClick}
                 headLabel={[
-                  { id: 'name', label: 'Name' },
-                  { id: 'company', label: 'Company' },
-                  { id: 'role', label: 'Role' },
-                  { id: 'isVerified', label: 'Verified', align: 'center' },
-                  { id: 'status', label: 'Status' },
+                  { id: 'studentRollNo', label: 'Roll No.' },
+                  { id: 'level', label: 'Level' },
                   { id: '' },
                 ]}
               />
               <TableBody>
-                {dataFiltered
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row) => (
-                    <UserTableRow
-                      key={row.id}
-                      name={row.name}
-                      role={row.role}
-                      status={row.status}
-                      company={row.company}
-                      avatarUrl={row.avatarUrl}
-                      isVerified={row.isVerified}
-                      selected={selected.indexOf(row.name) !== -1}
-                      handleClick={(event) => handleClick(event, row.name)}
-                    />
-                  ))}
-
-                <TableEmptyRows
-                  height={77}
-                  emptyRows={emptyRows(page, rowsPerPage, users.length)}
-                />
-
-                {notFound && <TableNoData query={filterName} />}
+                {loading ? (
+                  <TableEmptyRows height={77} emptyRows={rowsPerPage} />
+                ) : (
+                  <>
+                    {dataFiltered
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                      .map((student) => (
+                        <UserTableRow
+                          key={student._id}
+                          rollNo={student.studentRollNo}
+                          level={student.level}
+                        />
+                      ))}
+                  </>
+                )}
+                {error && <TableNoData />}
               </TableBody>
             </Table>
           </TableContainer>
@@ -161,7 +152,7 @@ export default function UserPage() {
         <TablePagination
           page={page}
           component="div"
-          count={users.length}
+          count={rowCount} // Adjust count based on filtered data
           rowsPerPage={rowsPerPage}
           onPageChange={handleChangePage}
           rowsPerPageOptions={[5, 10, 25]}

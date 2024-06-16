@@ -16,24 +16,9 @@ const navConfig = [
     icon: icon("ic_analytics"),
   },
   {
-    title: "user",
-    path: "/user",
-    icon: icon("ic_user"),
-  },
-  {
-    title: "Marathi",
-    path: "/marathi",
-    icon: icon("ic_lock"),
-  },
-  {
-    title: "Hindi",
-    path: "/hindi",
-    icon: icon("ic_lock"),
-  },
-  {
-    title: "English",
-    path: "/english",
-    icon: icon("ic_lock"),
+    title: 'Marathi',
+    path: '/marathi',
+    icon: icon('ic_cart'),
   },
   {
     title: "login",
