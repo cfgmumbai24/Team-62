@@ -1,9 +1,16 @@
+import os
 from flask import Flask, request, jsonify
 import requests
 from encode import encode
 from grade import grade_student, preprocess_text, calculate_similarity
+from flask_cors import CORS, cross_origin
+
 
 app = Flask(__name__)
+
+UPLOAD_FOLDER = ''
+# if not os.path.exists(UPLOAD_FOLDER):
+#   os.makedirs(UPLOAD_FOLDER)
 
 file_path = ''
 language = ''
@@ -18,10 +25,11 @@ def encode_data(path):
 @app.route('/grade', methods=['POST', 'GET'])
 def grade():
     global file_path, language
-    # data = request.json
-    reference_text = "क्या कर रहे हो?"    # Get original answer text from request
-    language = 'Hindi'   # Get language from request
-    file_path = 'input_hindi.mp3'  # Get file name from request
+    data = request.json
+    print(data)
+    reference_text = data['reference_text']    # Get original answer text from request
+    language = data['language']   # Get language from request
+    file_path = 'input.mp3'  # Get file name from request
     language_model_map = {
         "English": "641c0be440abd176d64c3f92",
         "Hindi": "660e9d6a3d23f057bbb012ce",
@@ -58,9 +66,32 @@ def grade():
     response = response.json()
     # print(response)
     student_text = response['data']['source']
-    return "Pass" if grade_student(reference_text, student_text) == 1 else "Fail"
+    mssg = ''
+    flag, percentage = grade_student(reference_text, student_text)
+    if flag:
+       mssg = "Pass"
+    else:
+       mssg = "Fail"
+    return jsonify({'Message': mssg, 'Percentage': percentage * 100}), 200
 
+@app.route('/upload', methods=['POST'])
+def upload_file():
+  if 'file' not in request.files:
+    return jsonify({'error': 'No file uploaded'}), 400
 
+  file = request.files['file']
+
+  if file.filename == '':
+    return jsonify({'error': 'No selected file'}), 400
+
+  filename = 'input.mp3'
+
+  filepath = os.path.join(UPLOAD_FOLDER, filename)
+  file.save(filepath)
+
+  return jsonify({'message': f'File uploaded successfully to {filepath}'}), 201
+
+CORS(app)
 
 if __name__ == '__main__':
     app.run(debug=True)

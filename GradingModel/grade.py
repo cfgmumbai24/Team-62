@@ -24,9 +24,9 @@ def grade_student(reference_text, student_text):
     similarity_score = calculate_similarity(reference_text, student_text)
     print(f"{similarity_score=}")
     if similarity_score >= 0.5:
-        return 1
+        return 1, similarity_score
     else:
-        return 0
+        return 0, similarity_score
 
 # reference_paragraph = "How are you?"
 # student_spoken_text = "How is you"

@@ -39,7 +39,12 @@ const navConfig = [
     title: "login",
     path: "/login",
     icon: icon("ic_lock"),
-  }
+  },
+  // {
+  //   title: "exam",
+  //   path: "/exam",
+  //   icon: icon("ic_lock"),
+  // }
 ];
 
 export default navConfig;

@@ -1,5 +1,6 @@
 /* eslint-disable perfectionist/sort-imports */
 import 'src/global.css';
+import "react-toastify/dist/ReactToastify.css";
 
 import { useScrollToTop } from 'src/hooks/use-scroll-to-top';
 

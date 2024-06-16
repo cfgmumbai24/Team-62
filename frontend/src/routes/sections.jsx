@@ -6,6 +6,7 @@ import DashboardLayout from 'src/layouts/dashboard';
 export const IndexPage = lazy(() => import('src/pages/app'));
 export const UserPage = lazy(() => import('src/pages/user'));
 export const LoginPage = lazy(() => import('src/pages/login'));
+export const ExamPage = lazy(() => import('src/pages/Exam'));
 
 // ----------------------------------------------------------------------
 
@@ -27,6 +28,10 @@ export default function Router() {
     {
       path: 'login',
       element: <LoginPage />,
+    },
+    {
+      path: 'exam/:id',
+      element: <ExamPage />,
     },
     {
       path: '*',
