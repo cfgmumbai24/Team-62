@@ -8,7 +8,6 @@ const bcryptsalt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken")
 const jwtSecret =process.env.JWT_SECRET_KEY;
 const cookieParser = require("cookie-parser");
-const Test = require('./models/test');
 app.use(express.json())
 app.use(cookieParser())
 const Student = require('./models/student');
