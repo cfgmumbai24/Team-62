@@ -6,7 +6,7 @@ const cors = require('cors');
 require("dotenv").config()
 const bcryptsalt = bcrypt.genSaltSync(10);
 const jwt = require("jsonwebtoken")
-const jwtSecret = "mdskjadskjbkjzxzgk";
+const jwtSecret =process.env.JWT_SECRET_KEY;
 const cookieParser = require("cookie-parser");
 app.use(express.json())
 app.use(cookieParser())
@@ -17,7 +17,7 @@ app.use(cors({
   credentials: true,
   origin: "http://localhost:3030",
 }));
-mongoose.connect( "mongodb+srv://test1:test123@atlascluster.miyhqef.mongodb.net/dbtest?retryWrites=true&w=majority&appName=AtlasCluster")
+mongoose.connect(process.env.mongo_uri)
   .then(() => console.log('Connected to Mongo'))
   .catch((err) => console.log(err));
 
