@@ -21,7 +21,12 @@ mongoose.connect( "mongodb+srv://test1:test123@atlascluster.miyhqef.mongodb.net/
   .then(() => console.log('Connected to Mongo'))
   .catch((err) => console.log(err));
 
-
+app.get('/teacherHome/:id', (req,res)=>{
+    const tid=req.params.id;
+    console.log(tid, "reached in get method")
+    Student.find({ teachers: tid }).then((result)=>{ console.log(result), res.json(result) })
+    
+  })
 
   //registering a teacher on the database
 app.post("/registerTeacher", async (req, res) => {  
