@@ -1,12 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './Exam.css';
-import { ToastContainer, toast } from 'react-toastify';
 
+import toast, { Toaster } from 'react-hot-toast';
 
 const Exam = () => {
     const [selectedOption, setSelectedOption] = useState('story');
-    const [text,setText] = useState('क्या कर रहे हो?');
-    const [language,setLanguage] = useState('Hindi');
+    const [result, setResult] = useState(false);
+    const [percentage, setPercentage] = useState(0);
+    // const [text,setText] = useState('क्या कर रहे हो?');
+    const [text,setText] = useState('माझं नाव राजू आहे.');
+    const [language,setLanguage] = useState('Marathi');
     const fileInputRef = useRef(null);
 
     useEffect(() => {
@@ -62,7 +65,17 @@ const Exam = () => {
     
             const d = await r.json();
             console.log('Grading response:', d); 
-            toast.success(`Status: ${d.Message}, Percentage: ${d.Percentage}`)
+            if(d.Message === 'Pass') {
+                toast.success('Passed');
+            }
+            else {
+                toast.error('Failed');
+            }
+            // toast(`Status: ${d.Message}, Percentage: ${d.Percentage}`)
+            // console.log('Grading response:', d.Message); 
+            // console.log('Grading response:', d.Percentage); 
+            // setResult(d.Message);
+            // setPercentage(d.Percentage);
     
             } catch (error) {
             console.error('Error uploading file:', error);
@@ -77,6 +90,10 @@ const Exam = () => {
 
     return (
         <div className="exam">
+            <Toaster
+                position="bottom-center"
+                reverseOrder={false}
+            />
             <h1>TEST</h1>
             {/* <select className="select" id="select" value={selectedOption} onChange={handleSelectChange}>
                 <option value="story">Story</option>
@@ -132,6 +149,9 @@ const Exam = () => {
                 <input type="submit" value="Upload" />
             </form>
         </div>
+        {result && (
+            {result}, {percentage}
+        )}
         </div>
     );
 };

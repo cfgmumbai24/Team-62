@@ -6,18 +6,20 @@ import TableCell from '@mui/material/TableCell';
 import Select from '@mui/material/Select';
 import FormControl from '@mui/material/FormControl';
 import Button from '@mui/material/Button';
+import { useRouter } from 'src/routes/hooks';
 
 export default function UserTableRow({
   rollNo,
   level,
 }) {
   const [levelValue, setLevelValue] = useState(level || 'paragraph');
+  const router = useRouter();
 
   const handleChange = (event) => {
     setLevelValue(event.target.value);
   };
 
-  const handleTestClick = () => {
+  const handleTestClick = (e) => {
     // Add your test handling logic here
     router.push(`/exam/${e.id ? e.id : 1}`)
   };
